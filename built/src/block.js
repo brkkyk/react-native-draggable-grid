@@ -23,7 +23,7 @@ var Block = /** @class */ (function (_super) {
     Block.prototype.render = function () {
         return (<react_native_1.Animated.View style={[styles.blockContainer, this.props.style, this.props.dragStartAnimationStyle]} {...this.props.panHandlers}>
         <react_native_1.Animated.View>
-          <react_native_1.TouchableWithoutFeedback onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
+          <react_native_1.TouchableWithoutFeedback onPressIn={this.props.onPressIn} onPress={this.props.onPress} onLongPress={this.props.onLongPress}>
             {this.props.children}
           </react_native_1.TouchableWithoutFeedback>
         </react_native_1.Animated.View>

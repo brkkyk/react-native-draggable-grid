@@ -276,7 +276,7 @@ var DraggableGrid = /** @class */ (function (_super) {
         ]} onLayout={this.assessGridSize}>
         {this.state.hadInitBlockSize &&
             this.items.map(function (item, itemIndex) {
-                return (<block_1.Block onPress={_this.setActiveBlock.bind(_this, itemIndex)} onLongPress={_this.onBlockPress.bind(_this, itemIndex)} panHandlers={_this.panResponder.panHandlers} style={_this.getBlockStyle(itemIndex)} dragStartAnimationStyle={_this.getDragStartAnimation(itemIndex)} key={item.key}>
+                return (<block_1.Block onPressIn={_this.setActiveBlock.bind(_this, itemIndex)} onLongPress={_this.onBlockPress.bind(_this, itemIndex)} panHandlers={_this.panResponder.panHandlers} style={_this.getBlockStyle(itemIndex)} dragStartAnimationStyle={_this.getDragStartAnimation(itemIndex)} key={item.key}>
                 {_this.props.renderItem(item.itemData, _this.orderMap[item.key].order)}
               </block_1.Block>);
             })}
