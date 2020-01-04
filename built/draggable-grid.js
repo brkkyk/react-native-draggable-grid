@@ -340,6 +340,9 @@ var DraggableGrid = /** @class */ (function (_super) {
             this.orderMap[activeItem.key].order = closetOrder;
             this.props.onResetSort && this.props.onResetSort(this.getSortData());
         }
+        else {
+            this.props.onNotResetSort && this.props.onNotResetSort(this.getSortData());
+        }
     };
     DraggableGrid.prototype.onHandRelease = function () {
         var activeItem = this.getActiveItem();
