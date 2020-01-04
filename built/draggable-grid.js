@@ -341,7 +341,7 @@ var DraggableGrid = /** @class */ (function (_super) {
             this.props.onResetSort && this.props.onResetSort(this.getSortData());
         }
         else {
-            this.props.onNotResetSort && this.props.onNotResetSort(this.getSortData());
+            this.props.onNotResetSort && this.props.onNotResetSort(activeItem);
         }
     };
     DraggableGrid.prototype.onHandRelease = function () {

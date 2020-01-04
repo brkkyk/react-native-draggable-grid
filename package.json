@@ -5,7 +5,7 @@
     "sortable",
     "grid"
   ],
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A draggable grid for react native with pressIn",
   "main": "built/index.js",
   "types": "src/index.ts",
