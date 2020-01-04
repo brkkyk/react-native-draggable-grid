@@ -174,6 +174,7 @@ export class DraggableGrid<DataType extends IBaseItemType> extends React.Compone
             return (
               <Block
                 onPressIn={this.setActiveBlock.bind(this, itemIndex)}
+                onPress={this.onBlockPress.bind(this, itemIndex)}
                 onLongPress={this.onBlockPress.bind(this, itemIndex)}
                 panHandlers={this.panResponder.panHandlers}
                 style={this.getBlockStyle(itemIndex)}
