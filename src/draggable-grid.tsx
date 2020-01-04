@@ -383,8 +383,6 @@ export class DraggableGrid<DataType extends IBaseItemType> extends React.Compone
       this.resetBlockPositionByOrder(this.orderMap[activeItem.key].order, closetOrder)
       this.orderMap[activeItem.key].order = closetOrder
       this.props.onResetSort && this.props.onResetSort(this.getSortData())
-    } else {
-      this.props.onNotResetSort && this.props.onNotResetSort(activeItem)
     }
   }
 
