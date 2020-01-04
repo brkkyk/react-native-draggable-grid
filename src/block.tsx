@@ -11,6 +11,7 @@ interface BlockProps {
   style?: StyleProp<any>
   dragStartAnimationStyle: StyleProp<any>
   onPress?: () => void
+  onPressIn: () => void
   onLongPress: () => void
   panHandlers: GestureResponderHandlers
 }
@@ -23,6 +24,7 @@ export class Block extends React.Component<BlockProps> {
         {...this.props.panHandlers}>
         <Animated.View>
           <TouchableWithoutFeedback
+            onPressIn={this.props.onPressIn}
             onPress={this.props.onPress}
             onLongPress={this.props.onLongPress}>
             {this.props.children}
