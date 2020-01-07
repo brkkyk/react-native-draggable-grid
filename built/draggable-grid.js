@@ -346,7 +346,7 @@ var DraggableGrid = /** @class */ (function (_super) {
         if (!activeItem)
             return false;
         if (this.props.onDragRelease) {
-            this.props.onDragRelease(this.getSortData());
+            this.props.onDragRelease(this.getSortData(), activeItem);
         }
         this.panResponderCapture = false;
         activeItem.currentPosition.flattenOffset();
