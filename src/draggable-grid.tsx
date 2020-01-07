@@ -29,7 +29,7 @@ export interface IDraggableGridProps<DataType extends IBaseItemType> {
   dragStartAnimation?: StyleProp<any>
   onItemPress?: (item: DataType) => void
   onDragStart?: (item: DataType) => void
-  onDragRelease?: (newSortedData: DataType[]) => void
+  onDragRelease?: (newSortedData: DataType[], item: IItem<DataType>) => void
   onResetSort?: (newSortedData: DataType[]) => void
   onNotResetSort?: (newSortedData: IItem<DataType>) => void
 }
@@ -427,7 +427,7 @@ export class DraggableGrid<DataType extends IBaseItemType> extends React.Compone
     const activeItem = this.getActiveItem()
     if (!activeItem) return false
     if (this.props.onDragRelease) {
-      this.props.onDragRelease(this.getSortData())
+      this.props.onDragRelease(this.getSortData(), activeItem)
     }
     this.panResponderCapture = false
     activeItem.currentPosition.flattenOffset()
