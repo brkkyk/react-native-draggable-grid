@@ -34,6 +34,7 @@ var DraggableGrid = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.orderMap = {};
         _this.items = [];
+        _this.itemMap = {};
         _this.blockPositions = [];
         _this.activeBlockOffset = { x: 0, y: 0 };
         _this.resetGridHeight = function () {
@@ -46,6 +47,7 @@ var DraggableGrid = /** @class */ (function (_super) {
             _this.orderMap[item.key] = {
                 order: index,
             };
+            _this.itemMap[item.key] = item;
             _this.items.push({
                 key: item.key,
                 itemData: item,
@@ -73,7 +75,9 @@ var DraggableGrid = /** @class */ (function (_super) {
                 },
             ];
         };
-        _this.setActiveBlock = function (itemIndex) {
+        _this.setActiveBlock = function (itemIndex, item) {
+            if (item.disabledDrag)
+                return;
             _this.panResponderCapture = true;
             _this.setState({
                 activeItemIndex: itemIndex,
@@ -166,25 +170,42 @@ var DraggableGrid = /** @class */ (function (_super) {
             var yDistance = startOffset.y + _this.activeBlockOffset.y - endOffset.y;
             return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
         };
-        _this.resetBlockPositionByOrder = function (startOrder, endOrder) {
-            if (startOrder > endOrder) {
-                for (var i = startOrder - 1; i >= endOrder; i--) {
+        _this.resetBlockPositionByOrder = function (activeItemOrder, insertedPositionOrder) {
+            var disabledReSortedItemCount = 0;
+            if (activeItemOrder > insertedPositionOrder) {
+                for (var i = activeItemOrder - 1; i >= insertedPositionOrder; i--) {
                     var key = _this.getKeyByOrder(i);
-                    _this.orderMap[key].order++;
-                    _this.moveBlockToBlockOrderPosition(key);
+                    var item = _this.itemMap[key];
+                    if (item && item.disabledReSorted) {
+                        disabledReSortedItemCount++;
+                    }
+                    else {
+                        _this.orderMap[key].order += disabledReSortedItemCount + 1;
+                        disabledReSortedItemCount = 0;
+                        _this.moveBlockToBlockOrderPosition(key);
+                    }
                 }
             }
             else {
-                for (var i = startOrder + 1; i <= endOrder; i++) {
+                for (var i = activeItemOrder + 1; i <= insertedPositionOrder; i++) {
                     var key = _this.getKeyByOrder(i);
-                    _this.orderMap[key].order--;
-                    _this.moveBlockToBlockOrderPosition(key);
+                    var item = _this.itemMap[key];
+                    if (item && item.disabledReSorted) {
+                        disabledReSortedItemCount++;
+                    }
+                    else {
+                        _this.orderMap[key].order -= disabledReSortedItemCount + 1;
+                        disabledReSortedItemCount = 0;
+                        _this.moveBlockToBlockOrderPosition(key);
+                    }
                 }
             }
         };
         _this.moveBlockToBlockOrderPosition = function (itemKey) {
             var itemIndex = utils_1.findIndex(_this.items, function (item) { return item.key === itemKey; });
             _this.items[itemIndex].currentPosition.flattenOffset();
+            //console.log("currentPosition:" + JSON.stringify( this.items[itemIndex].currentPosition));
+            //console.log("blockPositions: " +  JSON.stringify( this.blockPositions[this.orderMap[itemKey].order]));
             react_native_1.Animated.timing(_this.items[itemIndex].currentPosition, {
                 toValue: _this.blockPositions[_this.orderMap[itemKey].order],
                 duration: 200,
@@ -239,6 +260,7 @@ var DraggableGrid = /** @class */ (function (_super) {
                 if (currentItem) {
                     currentItem.itemData = item;
                 }
+                _this.itemMap[item.key] = item;
             }
             else {
                 _this.addItem(item, index);
@@ -258,6 +280,7 @@ var DraggableGrid = /** @class */ (function (_super) {
             _this.orderMap[item.key] = {
                 order: index,
             };
+            _this.itemMap[item.key] = item;
             return {
                 key: item.key,
                 itemData: item,
@@ -276,7 +299,7 @@ var DraggableGrid = /** @class */ (function (_super) {
         ]} onLayout={this.assessGridSize}>
         {this.state.hadInitBlockSize &&
             this.items.map(function (item, itemIndex) {
-                return (<block_1.Block onPressIn={_this.setActiveBlock.bind(_this, itemIndex)} onPress={_this.onBlockPress.bind(_this, itemIndex)} onLongPress={_this.onBlockPress.bind(_this, itemIndex)} panHandlers={_this.panResponder.panHandlers} style={_this.getBlockStyle(itemIndex)} dragStartAnimationStyle={_this.getDragStartAnimation(itemIndex)} key={item.key}>
+                return (<block_1.Block onPressIn={_this.setActiveBlock.bind(_this, itemIndex, item.itemData)} onLongPress={_this.onBlockPress.bind(_this, itemIndex)} panHandlers={_this.panResponder.panHandlers} style={_this.getBlockStyle(itemIndex)} dragStartAnimationStyle={_this.getDragStartAnimation(itemIndex)} key={item.key}>
                 {_this.props.renderItem(item.itemData, _this.orderMap[item.key].order)}
               </block_1.Block>);
             })}
@@ -325,6 +348,9 @@ var DraggableGrid = /** @class */ (function (_super) {
         var closetItemIndex = this.state.activeItemIndex;
         var closetDistance = dragPositionToActivePositionDistance;
         this.items.forEach(function (item, index) {
+            if (item.itemData.disabledReSorted) {
+                return;
+            }
             if (index != _this.state.activeItemIndex) {
                 var dragPositionToItemPositionDistance = _this.getDistance(dragPosition, _this.blockPositions[_this.orderMap[item.key].order]);
                 if (dragPositionToItemPositionDistance < closetDistance &&
