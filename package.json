@@ -5,13 +5,13 @@
     "sortable",
     "grid"
   ],
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "A draggable grid for react native with pressIn",
   "main": "built/index.js",
   "types": "src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SHISME/react-native-draggable-grid"
+    "url": "https://github.com/brkkyk/react-native-draggable-grid"
   },
   "scripts": {
     "built": "rm -rf built && tsc",
